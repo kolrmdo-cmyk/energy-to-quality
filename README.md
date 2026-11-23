@@ -1,5 +1,10 @@
 # energy-to-quality
 
+[![smoke](https://github.com/kolrmdo-cmyk/energy-to-quality/actions/workflows/smoke.yml/badge.svg)](https://github.com/kolrmdo-cmyk/energy-to-quality/actions/workflows/smoke.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Intel%20RAPL-lightgrey.svg)](METHODOLOGY.md)
+
 **Measure training energy to target quality — not just accuracy.**
 
 [Русская версия](README.ru.md)
@@ -51,6 +56,26 @@ What to inspect in `verify_proof.json`:
 - `summary.const_lr.q0.95` / `summary.onecycle.q0.95` — pass rate, median_J, IQR
 - `paired.0.95` — pairwise diffs and win counts
 - `system_before/after`, `idle_power_before/after` — run conditions
+
+## Example output
+
+```json
+{
+  "summary": {
+    "const_lr": {
+      "q0.95": { "pass_rate": 1.0, "n_pass": 20, "median_J": 267.70, "iqr_J": [242.25, 592.77] }
+    },
+    "onecycle": {
+      "q0.95": { "pass_rate": 1.0, "n_pass": 20, "median_J": 240.23, "iqr_J": [209.93, 433.22] }
+    }
+  },
+  "paired": {
+    "0.95": { "median_diff_a_minus_b_J": 36.71, "a_better_count": 7, "b_better_count": 13, "median_ratio_a_over_b": 1.15 }
+  }
+}
+```
+
+*Snippet from v37b (20 interleaved repeats, same fixed full-MNIST split, different training seeds).*
 
 ## What's in the repo
 

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this benchmark or protocol, please cite it."
+title: "energy-to-quality: Joules-to-Q_min benchmark"
+type: software
+authors:
+  - family-names: "Sudakov"
+    given-names: "Nikolay"
+version: "0.1.0"
+date-released: "2026-11-23"
+repository-code: "https://github.com/kolrmdo-cmyk/energy-to-quality"
+license: MIT
+abstract: "A reproducible benchmark and protocol for measuring energy to target quality (Joules_to_Q_min) in CPU training runs using Intel RAPL."
+keywords:
+  - machine-learning
+  - benchmarking
+  - energy-efficiency
+  - green-ai
+  - reproducibility
