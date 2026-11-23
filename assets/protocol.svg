@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="180" viewBox="0 0 980 180" font-family="DejaVu Sans, Arial, sans-serif">
+  <style>
+    .box { fill:#f6f8fa; stroke:#d0d7de; stroke-width:1.5; rx:10; ry:10; }
+    .title { font-size:14px; font-weight:700; fill:#24292f; }
+    .text { font-size:12px; fill:#57606a; }
+    .arrow { stroke:#57606a; stroke-width:2; fill:none; marker-end:url(#m); }
+  </style>
+  <defs>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#57606a" />
+    </marker>
+  </defs>
+  <rect class="box" x="20" y="45" width="170" height="90"/>
+  <text class="title" x="105" y="72" text-anchor="middle">1. Configure</text>
+  <text class="text" x="105" y="95" text-anchor="middle">same task, split, Q_min</text>
+  <text class="text" x="105" y="113" text-anchor="middle">model, batch, epochs</text>
+
+  <rect class="box" x="220" y="45" width="170" height="90"/>
+  <text class="title" x="305" y="72" text-anchor="middle">2. Warmup</text>
+  <text class="text" x="305" y="95" text-anchor="middle">JIT/compile excluded</text>
+  <text class="text" x="305" y="113" text-anchor="middle">from measurement</text>
+
+  <rect class="box" x="420" y="45" width="180" height="90"/>
+  <text class="title" x="510" y="72" text-anchor="middle">3. Interleaved A/B</text>
+  <text class="text" x="510" y="95" text-anchor="middle">baseline vs candidate</text>
+  <text class="text" x="510" y="113" text-anchor="middle">repeated seeds/splits</text>
+
+  <rect class="box" x="630" y="45" width="150" height="90"/>
+  <text class="title" x="705" y="72" text-anchor="middle">4. RAPL</text>
+  <text class="text" x="705" y="95" text-anchor="middle">measure package energy</text>
+  <text class="text" x="705" y="113" text-anchor="middle">per epoch/checkpoint</text>
+
+  <rect class="box" x="810" y="45" width="150" height="90"/>
+  <text class="title" x="885" y="72" text-anchor="middle">5. Report</text>
+  <text class="text" x="885" y="95" text-anchor="middle">Joules_to_Q_min</text>
+  <text class="text" x="885" y="113" text-anchor="middle">median, IQR, pass rate</text>
+
+  <path class="arrow" d="M190,90 L220,90"/>
+  <path class="arrow" d="M390,90 L420,90"/>
+  <path class="arrow" d="M600,90 L630,90"/>
+  <path class="arrow" d="M780,90 L810,90"/>
+</svg>

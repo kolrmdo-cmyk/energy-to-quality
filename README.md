@@ -1,52 +1,83 @@
 # energy-to-quality
 
-Небольшой воспроизводимый бенчмарк/CLI для измерения **энергии до достижения целевого качества** при обучении нейросети на CPU.
+**Measure training energy to target quality — not just accuracy.**
 
-Главная метрика: **`Joules_to_Q_min`** — сколько джоулей потрачено до первого достижения порога качества `Q_min` (например, test accuracy >= 0.95). Энергия измеряется через Intel RAPL (`/sys/class/powercap/intel-rapl:0/energy_uj`), не через программный прокси.
+`energy-to-quality` is a small reproducible benchmark for CPU training runs.  
+Main metric: **`Joules_to_Q_min`** — how many joules it takes to reach a target quality threshold `Q_min`.
 
-> Статус: публичный прототип для воспроизведения и проверки. Результаты привязаны к конкретному железу, задаче и протоколу; это не универсальный физический минимум.
+> Honest prototype. Results are tied to the tested hardware/task/protocol, not a universal physical minimum.
 
-**Для быстрой презентации/проверки:** см. [ONE_PAGER.md](ONE_PAGER.md).
+![Protocol](assets/protocol.svg)
 
-## Что внутри
+## Why it matters
 
-- `scripts/run_champion.py` — воспроизводимый запуск подтверждённых конфигураций (MNIST 12k / full MNIST).
-- `scripts/run_proof.py` — честное сравнение baseline vs champion: чередование, повторы, idle-power, парная статистика, checkpoint JSON.
-- `results/` — сохранённые JSON-артефакты прогонов.
-- `RESULTS.md` — сводка подтверждённых результатов и ограничений.
-- `METHODOLOGY.md` — протокол измерения и правила честного сравнения.
+Accuracy alone does not answer a practical question: *how much energy did it cost to get good enough?*
 
-## Быстрый старт
+This repo provides a simple, auditable protocol:
 
-Требования: Linux, Intel CPU с RAPL package-0, Python 3.10+, доступ на чтение `energy_uj`.
+- **Honest oracle:** Intel RAPL package-0 (`/sys/class/powercap/intel-rapl:0/energy_uj`)
+- **Honest comparison:** JIT/warmup excluded, interleaved A/B runs, repeated seeds, median/IQR/pass rate, paired diffs
+- **Reproducible artifacts:** scripts + JSON outputs
+
+## Key results (Intel CPU, MNIST/MLP)
+
+| Experiment | Task | Comparison | Result | Takeaway |
+|---|---|---|---|---|
+| v29 | MNIST 12k, Q=0.94 | one-cycle champion, 2 splits | 29.57 J [27.64,32.47] and 33.61 J [32.50,33.86], 5/5 + 5/5 | Confirmed champion on 2 splits |
+| v34 | Full MNIST, Q=0.95 | one-cycle config | 263.69 J [198.80,320.36], 5/5 (same split, different seeds) | Reaches Q=0.95 reliably in that setup |
+| v37 | Full MNIST, Q=0.95 | const_lr vs one-cycle, 10 paired runs | const 765.98 J [722.95,827.68], one 656.13 J [636.49,715.80], one better in 8/10 | Strong signal; loaded system |
+| v37b | Full MNIST, Q=0.95 | const_lr vs one-cycle, 20 paired runs | const 267.70 J [242.25,592.77], one 240.23 J [209.93,433.22], one better in 13/20 | Direction holds; IQR overlap, background drift |
+
+**Plain summary:** the simple one-cycle recipe usually reached target quality with less package energy than constant LR in these tests, but package-level RAPL includes background noise, so this is strong practical evidence, not an isolated lab-grade physical proof.
+
+## Quick verify
+
+Requirements: Linux, Intel CPU with RAPL package-0, Python 3.10+, read access to `energy_uj`.
 
 ```bash
-# через uv (рекомендуется)
-uv run --with numpy --with scikit-learn --with numba -- python scripts/run_champion.py --task mnist12k --q-min 0.94 --repeats 5 --out results/champion_12k.json
+# Champion run (full MNIST, Q=0.95)
+uv run --with numpy --with scikit-learn --with numba -- \
+  python scripts/run_champion.py --task mnist-full --q-min 0.95 --repeats 5 --out results/verify_champion.json
 
-uv run --with numpy --with scikit-learn --with numba -- python scripts/run_champion.py --task mnist-full --q-min 0.95 --repeats 5 --out results/champion_full.json
-
-# честное proof-сравнение const_lr vs one-cycle на full MNIST
-uv run --with numpy --with scikit-learn --with numba -- python scripts/run_proof.py --repeats 10 --out results/proof.json
+# Honest A/B proof (const_lr vs one-cycle)
+uv run --with numpy --with scikit-learn --with numba -- \
+  python scripts/run_proof.py --repeats 10 --out results/verify_proof.json
 ```
 
-## Подтверждённые конфигурации (этот репозиторий)
+What to inspect in `verify_proof.json`:
 
-| Задача | Q_min | Конфиг | Результат | Статус |
-|---|---:|---|---|---|
-| MNIST 12k (2 split) | 0.94 | `784-64-10`, batch 64, 40ep, max_lr 0.08, one-cycle, Numba, early stop | ~29.6–33.6 J медиана, 5/5 на split 42 и 123 | подтверждён |
-| Full MNIST 60k/10k (fixed split) | 0.95 | `784-128-10`, batch 128, 20ep, max_lr 0.08, one-cycle, Numba, early stop | 5/5 по seed на одном split; энергия зависит от фона | подтверждён как конфиг |
-| Full MNIST, baseline vs one-cycle | 0.95 | тот же split/Q/model, чередование, 10/20 повторов | one-cycle лучше по медиане/среднему и в большинстве пар; IQR перекрываются в v36/v37b | сильное практическое свидетельство |
+- `summary.const_lr.q0.95` / `summary.onecycle.q0.95` — pass rate, median_J, IQR
+- `paired.0.95` — pairwise diffs and win counts
+- `system_before/after`, `idle_power_before/after` — run conditions
 
-Подробности и оговорки: [RESULTS.md](RESULTS.md), [METHODOLOGY.md](METHODOLOGY.md).
+## What's in the repo
 
-## Ограничения (важно)
+```text
+.
+├── assets/protocol.svg      # protocol diagram
+├── scripts/
+│   ├── run_champion.py      # reproducible champion config
+│   └── run_proof.py         # interleaved A/B proof with checkpoints
+├── results/                 # saved JSON artifacts
+├── ONE_PAGER.md             # short presentation-ready summary
+├── METHODOLOGY.md           # measurement protocol
+├── RESULTS.md               # detailed results and caveats
+└── README.md
+```
 
-- **RAPL package-0** измеряет энергию всего CPU-пакета, не только обучения; фон системы влияет на абсолютные джоули.
-- Результаты **не переносятся автоматически** на другие CPU/GPU/TPU, датасеты, модели, драйверы, режимы питания.
-- `5/5` или `10/10` всегда нужно читать вместе с тем, что повторялось: разные seed обучения на одном split или разные split.
-- Это практический инженерный рецепт/протокол, **не** доказательство физического минимума и **не** “революция в обучении ИИ”.
+## Limitations (read this)
 
-## Лицензия
+- **RAPL package-0 measures whole CPU package**, not only training. Background load affects absolute joules.
+- **Scope is limited:** Intel CPU + MNIST/MLP proof-of-protocol. No automatic transfer to GPU/TPU/LLMs.
+- **Not a breakthrough claim:** this is a practical measurement recipe, not a new learning theory or physical minimum.
+- **IQR overlap exists** in some comparisons; interpret with paired stats and run conditions.
 
-MIT — см. [LICENSE](LICENSE).
+## Next good steps
+
+- Port the same protocol to GPU (NVML) or external power meter.
+- Test on more representative workloads (CIFAR, small transformer, fine-tuning).
+- Wrap as CI energy-regression check: `Joules_to_Q_min` A/B gate.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
