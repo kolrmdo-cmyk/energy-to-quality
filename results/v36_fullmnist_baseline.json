@@ -1,0 +1,23 @@
+load
+warmup
+Running const_lr rep0
+  {0.93: 168.808833, 0.94: 436.130353, 0.95: 563.687094} acc=0.9707
+Running onecycle rep0
+  {0.93: 491.392907, 0.94: 611.598105, 0.95: 729.034023} acc=0.9731
+Running const_lr rep1
+  {0.93: 355.001898, 0.94: 458.768967, 0.95: 730.693075} acc=0.9685
+Running onecycle rep1
+  {0.93: 394.984829, 0.94: 596.607237, 0.95: 861.920584} acc=0.9722
+Running const_lr rep2
+  {0.93: 616.829597, 0.94: 788.409053, 0.95: 1000.710023} acc=0.9698
+Running onecycle rep2
+  {0.93: 180.083035, 0.94: 226.746489, 0.95: 276.112757} acc=0.9718
+Running const_lr rep3
+  {0.93: 111.201497, 0.94: 261.496889, 0.95: 852.271927} acc=0.9687
+Running onecycle rep3
+  {0.93: 159.291096, 0.94: 213.362979, 0.95: 262.154053} acc=0.9707
+Running const_lr rep4
+  {0.93: 181.448205, 0.94: 233.320936, 0.95: 299.838527} acc=0.9689
+Running onecycle rep4
+  {0.93: 321.993744, 0.94: 389.975869, 0.95: 427.130437} acc=0.9728
+{"task": "mnist_full_60k_10k_standard_split", "note": "5/5 = different training seeds on the same fixed standard split", "summary": {"const_lr": {"final_acc_median": 0.9689, "q0.93": {"pass_rate": 1.0, "median_J": 181.448205, "iqr_J": [168.808833, 355.001898], "median_epoch": 3.0}, "q0.94": {"pass_rate": 1.0, "median_J": 436.130353, "iqr_J": [261.496889, 458.768967], "median_epoch": 4.0}, "q0.95": {"pass_rate": 1.0, "median_J": 730.693075, "iqr_J": [563.687094, 852.271927], "median_epoch": 5.0}}, "onecycle": {"final_acc_median": 0.9722, "q0.93": {"pass_rate": 1.0, "median_J": 321.993744, "iqr_J": [180.083035, 394.984829], "median_epoch": 3.0}, "q0.94": {"pass_rate": 1.0, "median_J": 389.975869, "iqr_J": [226.746489, 596.607237], "median_epoch": 4.0}, "q0.95": {"pass_rate": 1.0, "median_J": 427.130437, "iqr_J": [276.112757, 729.034023], "median_epoch": 5.0}}}, "runs": {"const_lr": [{"mode": "const_lr", "seed": 0, "test_acc": 0.9707, "J_total": 2713.249585, "e_at": {"0.93": {"epoch": 2, "test_acc": 0.9311, "J": 168.808833}, "0.94": {"epoch": 4, "test_acc": 0.9462, "J": 436.130353}, "0.95": {"epoch": 5, "test_acc": 0.953, "J": 563.687094}}}, {"mode": "const_lr", "seed": 1, "test_acc": 0.9685, "J_total": 2310.042609, "e_at": {"0.93": {"epoch": 3, "test_acc": 0.9384, "J": 355.001898}, "0.94": {"epoch": 4, "test_acc": 0.9449, "J": 458.768967}, "0.95": {"epoch": 6, "test_acc": 0.9524, "J": 730.693075}}}, {"mode": "const_lr", "seed": 2, "test_acc": 0.9698, "J_total": 3479.726992, "e_at": {"0.93": {"epoch": 3, "test_acc": 0.9393, "J": 616.829597}, "0.94": {"epoch": 4, "test_acc": 0.9455, "J": 788.409053}, "0.95": {"epoch": 5, "test_acc": 0.9513, "J": 1000.710023}}}, {"mode": "const_lr", "seed": 3, "test_acc": 0.9687, "J_total": 1685.56203, "e_at": {"0.93": {"epoch": 2, "test_acc": 0.9314, "J": 111.201497}, "0.94": {"epoch": 4, "test_acc": 0.9467, "J": 261.496889}, "0.95": {"epoch": 6, "test_acc": 0.9528, "J": 852.271927}}}, {"mode": "const_lr", "seed": 4, "test_acc": 0.9689, "J_total": 1143.410952, "e_at": {"0.93": {"epoch": 3, "test_acc": 0.9378, "J": 181.448205}, "0.94": {"epoch": 4, "test_acc": 0.9452, "J": 233.320936}, "0.95": {"epoch": 5, "test_acc": 0.95, "J": 299.838527}}}], "onecycle": [{"mode": "onecycle", "seed": 0, "test_acc": 0.9731, "J_total": 3095.399119, "e_at": {"0.93": {"epoch": 3, "test_acc": 0.9329, "J": 491.392907}, "0.94": {"epoch": 4, "test_acc": 0.9437, "J": 611.598105}, "0.95": {"epoch": 5, "test_acc": 0.9556, "J": 729.034023}}}, {"mode": "onecycle", "seed": 1, "test_acc": 0.9722, "J_total": 2997.216875, "e_at": {"0.93": {"epoch": 3, "test_acc": 0.93, "J": 394.984829}, "0.94": {"epoch": 4, "test_acc": 0.9425, "J": 596.607237}, "0.95": {"epoch": 5, "test_acc": 0.9514, "J": 861.920584}}}, {"mode": "onecycle", "seed": 2, "test_acc": 0.9718, "J_total": 1540.373986, "e_at": {"0.93": {"epoch": 3, "test_acc": 0.9317, "J": 180.083035}, "0.94": {"epoch": 4, "test_acc": 0.944, "J": 226.746489}, "0.95": {"epoch": 5, "test_acc": 0.9538, "J": 276.112757}}}, {"mode": "onecycle", "seed": 3, "test_acc": 0.9707, "J_total": 1385.195611, "e_at": {"0.93": {"epoch": 3, "test_acc": 0.9321, "J": 159.291096}, "0.94": {"epoch": 4, "test_acc": 0.9443, "J": 213.362979}, "0.95": {"epoch": 5, "test_acc": 0.9513, "J": 262.154053}}}, {"mode": "onecycle", "seed": 4, "test_acc": 0.9728, "J_total": 1131.07645, "e_at": {"0.93": {"epoch": 3, "test_acc": 0.9317, "J": 321.993744}, "0.94": {"epoch": 4, "test_acc": 0.943, "J": 389.975869}, "0.95": {"epoch": 5, "test_acc": 0.9517, "J": 427.130437}}}]}}
