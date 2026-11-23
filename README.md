@@ -2,6 +2,8 @@
 
 **Measure training energy to target quality — not just accuracy.**
 
+[Русская версия](README.ru.md)
+
 `energy-to-quality` is a small reproducible benchmark for CPU training runs.  
 Main metric: **`Joules_to_Q_min`** — how many joules it takes to reach a target quality threshold `Q_min`.
 
@@ -77,6 +79,10 @@ What to inspect in `verify_proof.json`:
 - Port the same protocol to GPU (NVML) or external power meter.
 - Test on more representative workloads (CIFAR, small transformer, fine-tuning).
 - Wrap as CI energy-regression check: `Joules_to_Q_min` A/B gate.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Issues and reproducibility reports are welcome.
 
 ## License
 
